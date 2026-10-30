@@ -1,0 +1,60 @@
+# Portfolio analytics configuration.
+# Every number the app uses as an assumption lives here, so it can be changed
+# without touching code.
+
+# All portfolio values and returns are reported in this currency.
+base_currency: CAD
+
+# Blended benchmark: weights must sum to 1.0. Rebalanced monthly.
+# ETF proxies with dividends reinvested (total return), so the comparison is
+# like-for-like with your returns, which include dividends. VFV.TO holds the
+# S&P 500 in CAD (unhedged), so its CAD price already includes the USD/CAD move.
+# Price-only alternative: ^GSPTSE (CAD) and ^GSPC (USD) with total_return: false.
+benchmark:
+  rebalance: monthly
+  total_return: true
+  components:
+    - name: S&P/TSX Composite (XIC)
+      ticker: "XIC.TO"
+      currency: CAD
+      weight: 0.50
+    - name: S&P 500 in CAD (VFV)
+      ticker: "VFV.TO"
+      currency: CAD
+      weight: 0.50
+
+# FX pair used to convert USD to CAD. yfinance quotes CADUSD=X as
+# "USD per 1 CAD", so CAD value = USD value / rate.
+fx_ticker: "CADUSD=X"
+
+# Risk (Phase 3).
+risk:
+  # Average Government of Canada 3-month T-bill yield over 2026 (about 2.2-2.45%;
+  # Bank of Canada policy rate 2.25% through September 2026). Used for Sharpe.
+  risk_free_rate: 0.023
+  target_risk_per_trade: 0.01   # 1% of account equity at risk per trade
+  # No hard stops, so each trade's stop is estimated as entry - atr_multiple x ATR,
+  # using the Average True Range known before the trade. A stop_price you enter
+  # in the trade file overrides this.
+  atr_period: 14
+  atr_multiple: 2.0
+
+# AI commentary (Phase 5). The model only writes about numbers computed in code.
+ai:
+  model: claude-opus-5-5         # swap for claude-sonnet-5-5 to cut cost
+  effort: high                   # low | medium | high | xhigh | max (thinking depth and spend)
+  max_tokens: 16000              # ceiling per reply, including the model's thinking
+
+# Wealthsimple holdings report used to back out positions held on Jan 1, 2026.
+# Its footer says 16:00, but it can reflect the account part-way through the day.
+# Set the cutoff to a time after the last trade it includes and before the first
+# one it leaves out.
+wealthsimple:
+  holdings_report: data/private/holdings-report-2026-06-02.csv
+  activities_export: data/private/activities-export-2026-10-29.csv
+  holdings_snapshot_cutoff: "2026-06-02 12:00"
+
+# Default input files used when "Use sample data" is on.
+data:
+  sample_trades: data/sample_trades.csv
+  sample_cash_flows: data/sample_cash_flows.csv
