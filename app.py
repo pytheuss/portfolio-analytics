@@ -50,7 +50,9 @@ def choose_source() -> tuple[str, tuple]:
     """Sidebar: sample data, your files in data/private/, or uploaded files."""
     st.sidebar.header("Data")
     has_private = private_files_available(CONFIG)
-    use_sample = st.sidebar.toggle("Use sample data", value=not has_private,
+    # A link ending in ?data=sample opens on the sample data (for demos and screenshots).
+    wants_sample = st.query_params.get("data") == "sample"
+    use_sample = st.sidebar.toggle("Use sample data", value=wants_sample or not has_private,
                                    help="Fake trades at real historical prices.")
     if use_sample:
         return "sample", ()

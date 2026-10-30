@@ -10,8 +10,7 @@ figure. It receives a JSON summary of results that code has already calculated,
 writes about them, and its output is then checked by code: any number in the text
 that doesn't appear in the JSON is flagged.
 
-![Overview page](docs/screenshot.png)
-<!-- Screenshot placeholder: add docs/screenshot.png (Overview page, sample data). -->
+![Overview page, sample data](docs/screenshot.png)
 
 ## What it does
 
@@ -43,6 +42,10 @@ one:
 ```bash
 cp .env.example .env      # then add your key after ANTHROPIC_API_KEY=
 ```
+
+Once your own files are in `data/private/`, the app opens on them instead. Switch
+on **Use sample data** in the sidebar, or open http://localhost:8501/?data=sample,
+to show the sample.
 
 Settings you might change (benchmark weights, risk-free rate, the 1% risk target,
 the AI model) are in [`config.yaml`](config.yaml).
